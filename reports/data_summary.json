@@ -1,0 +1,28 @@
+{
+  "clinvar_release": "2026-09-13",
+  "flank": 512,
+  "window_length": 1025,
+  "min_review_stars": 1,
+  "n_variants": 207018,
+  "n_genes": 15018,
+  "dropped": {
+    "ref_mismatch": 0,
+    "off_chromosome": 0,
+    "contains_N": 0,
+    "duplicate": 0
+  },
+  "by_split": {
+    "test": {
+      "benign": 6976,
+      "pathogenic": 1701
+    },
+    "train": {
+      "benign": 134144,
+      "pathogenic": 57619
+    },
+    "val": {
+      "benign": 4894,
+      "pathogenic": 1684
+    }
+  }
+}

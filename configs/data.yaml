@@ -1,0 +1,20 @@
+# Phase 2 - dataset build configuration
+clinvar_vcf: data/raw/clinvar.vcf.gz
+reference_fasta: data/raw/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+output_parquet: data/processed/variants.parquet
+summary_json: reports/data_summary.json
+
+# bases taken on each side of the variant (window length = 2 * flank + 1)
+flank: 512
+
+# minimum ClinVar review status in "gold stars" (0-4)
+min_review_stars: 1
+
+# chromosomes kept (Ensembl / ClinVar naming, no "chr" prefix)
+chromosomes: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+              "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X"]
+
+# chromosome-level split to avoid leakage between train and test
+splits:
+  test: ["8", "21"]
+  val: ["10"]
