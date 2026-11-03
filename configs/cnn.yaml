@@ -1,0 +1,14 @@
+# Phase 3 - baseline 2: 1D convolutional network on one-hot DNA
+name: cnn_onehot
+data: data/processed/variants.parquet
+flank_in: 512          # flank stored in the dataset
+flank: 100             # bases each side fed to the CNN (window = 201 bp)
+channels: 128
+dropout: 0.3
+epochs: 10
+batch_size: 256
+lr: 0.001
+weight_decay: 0.0001
+patience: 3            # early stopping on validation AUPRC
+rc_augment: true       # random reverse-complement during training
+seed: 42

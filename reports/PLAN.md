@@ -21,7 +21,7 @@
   - columns: chrom, pos, ref, alt, gene, review_status, label, split, ref_seq, alt_seq
 
 ## Phase 3: Baselines
-- Logistic regression on 6-mer count differences (alt − ref)
+- Logistic regression on substitution class, context k-mers and 6-mer differences
 - 1D-CNN on one-hot encoded ref and alt sequences
 - Report AUROC and AUPRC on the test chromosomes
 

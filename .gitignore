@@ -51,3 +51,7 @@ data/processed/*
 outputs/
 wandb/
 mlruns/
+
+# --- trained weights ---
+/models/
+data/external/

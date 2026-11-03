@@ -1,0 +1,10 @@
+# Phase 3 - baseline 1: logistic regression on hand-crafted sequence features
+name: logreg_kmer
+data: data/processed/variants.parquet
+flank_in: 512          # flank stored in the dataset
+context_flank: 50      # bases each side used for the context k-mer profile
+context_k: 4           # k for the context profile (4**4 = 256 features)
+delta_k: 6             # k for the alt - ref k-mer change (4**6 = 4096 features)
+C: 0.1                 # inverse regularisation strength
+max_iter: 2000
+seed: 42

@@ -24,7 +24,8 @@ if [ ! -f "$FASTA" ]; then
 fi
 
 echo "==> Indexing FASTA"
-[ -f "$FASTA.fai" ] || samtools faidx "$FASTA"
+# pyfaidx builds the index itself on first use if samtools is not installed
+if [ ! -f "$FASTA.fai" ] && command -v samtools >/dev/null; then samtools faidx "$FASTA"; fi
 
 echo
 echo "Done. Files in $RAW_DIR:"

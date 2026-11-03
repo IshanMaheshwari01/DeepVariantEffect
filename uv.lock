@@ -821,7 +821,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.4" },
     { name = "seaborn", specifier = ">=0.13" },
     { name = "streamlit", marker = "extra == 'app'", specifier = ">=1.34" },
-    { name = "torch", marker = "extra == 'ml'", specifier = ">=2.2" },
+    { name = "torch", marker = "extra == 'ml'", specifier = ">=2.6" },
     { name = "tqdm", specifier = ">=4.66" },
     { name = "transformers", marker = "extra == 'ml'", specifier = ">=4.41" },
 ]

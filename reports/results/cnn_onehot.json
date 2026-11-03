@@ -1,0 +1,51 @@
+{
+  "model": "cnn_onehot",
+  "config": {
+    "name": "cnn_onehot",
+    "data": "data/processed/variants.parquet",
+    "flank_in": 512,
+    "flank": 100,
+    "channels": 128,
+    "dropout": 0.3,
+    "epochs": 10,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "patience": 3,
+    "rc_augment": true,
+    "seed": 42
+  },
+  "best_epoch": 5,
+  "val": {
+    "n": 6578,
+    "prevalence": 0.25600486470051687,
+    "auroc": 0.784312217102332,
+    "auprc": 0.5500342996335609,
+    "brier": 0.1596116914921603,
+    "auroc_ci95": [
+      0.7723297542280059,
+      0.798245248826373
+    ],
+    "auprc_ci95": [
+      0.5268241485715061,
+      0.5739458865211812
+    ]
+  },
+  "test": {
+    "n": 8677,
+    "prevalence": 0.1960354961392186,
+    "auroc": 0.7719877490440052,
+    "auprc": 0.4929534400427365,
+    "brier": 0.13099684688941338,
+    "auroc_ci95": [
+      0.7582075431465702,
+      0.7841825263755223
+    ],
+    "auprc_ci95": [
+      0.46951971371563295,
+      0.5166557292668521
+    ]
+  },
+  "train_seconds": 85.0,
+  "device": "cuda"
+}

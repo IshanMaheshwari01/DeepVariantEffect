@@ -2,7 +2,7 @@
 
 Predicting whether a missense variant is pathogenic or benign from the DNA sequence around it.
 
-**Status: in progress.** The dataset is built and tested. Models and results are next.
+**Status: code complete, full training run pending.** The dataset is built. All models, the benchmark and the demo are implemented and tested. The results table fills in from the real run.
 
 ## The idea
 
@@ -21,7 +21,7 @@ GRCh38 FASTA ->  take 512 bp on each side of the variant (1,025 bp window)
              ->  small classifier  ->  P(pathogenic)
 ```
 
-Before the transformer I'll train two simple baselines, logistic regression on 6-mer counts and a 1D CNN on one-hot sequence, so I know whether the big model is actually adding anything.
+Before the transformer I train two simple baselines, logistic regression on substitution and k-mer features and a 1D CNN on one-hot sequence, so I know whether the big model is actually adding anything.
 
 ## Dataset (done)
 
@@ -41,15 +41,22 @@ The classes are imbalanced (about 3 benign to 1 pathogenic), so I'll report AUPR
 
 ## Results
 
-Nothing yet. This table will be filled in as each model is trained.
+<!-- results:start -->
+On 8,168 test variants scored by every tool:
 
-| Model | AUROC | AUPRC |
-|---|:---:|:---:|
-| Logistic regression (6-mers) | | |
-| 1D CNN (one-hot) | | |
-| Nucleotide Transformer + LoRA | | |
-| CADD | | |
-| REVEL | | |
+| Model | AUROC (95% CI) | AUPRC (95% CI) | Within-gene AUROC |
+|---|:---:|:---:|:---:|
+| REVEL | 0.973 (0.965-0.979) | 0.921 (0.885-0.948) | 0.953 |
+| AlphaMissense | 0.954 (0.941-0.967) | 0.851 (0.789-0.903) | 0.959 |
+| CADD | 0.926 (0.909-0.945) | 0.723 (0.634-0.809) | 0.912 |
+| 1D CNN | 0.775 (0.745-0.804) | 0.497 (0.388-0.591) | 0.753 |
+| Logistic regression | 0.701 (0.678-0.727) | 0.352 (0.277-0.440) | 0.676 |
+
+- The best sequence-only model is 1D CNN, AUROC 0.775.
+- Against REVEL the difference is -0.198 (95% CI -0.229 to -0.168, resampling genes).
+
+Full write-up: [`reports/REPORT.md`](reports/REPORT.md).
+<!-- results:end -->
 
 ## Running it
 
@@ -63,7 +70,13 @@ uv run pytest -q                  # tests
 bash scripts/download_data.sh     # ClinVar VCF (~190 MB) and GRCh38 FASTA (~900 MB)
 uv run python -m dve.data.build_dataset
 uv run python scripts/eda_dataset.py
+
+bash scripts/run_all.sh                       # baselines, CNN, benchmark, report
+uv run python -m dve.training.train_nt        # transformer (needs a GPU)
+uv run streamlit run src/dve/app/streamlit_app.py
 ```
+
+To train the transformer on Colab use `notebooks/train_nt_colab.ipynb`. After it finishes, re-run the last four commands in `scripts/run_all.sh`.
 
 Settings for the dataset (flank size, review stars, splits) are in `configs/data.yaml`. Lint and tests run on every push with GitHub Actions.
 
@@ -71,11 +84,11 @@ Settings for the dataset (flank size, review stars, splits) are in `configs/data
 
 - [x] Repo setup, environment, CI
 - [x] ClinVar + GRCh38 dataset with a chromosome split
-- [ ] Baselines: k-mer logistic regression and 1D CNN
-- [ ] LoRA fine-tuning of Nucleotide Transformer (on a Colab GPU)
-- [ ] Compare with CADD and REVEL from dbNSFP, broken down by gene and review status
-- [ ] Small Streamlit demo
-- [ ] Write-up
+- [x] Baselines: logistic regression and 1D CNN
+- [x] LoRA fine-tuning of Nucleotide Transformer (code, with a Colab notebook)
+- [x] Compare with CADD, REVEL and AlphaMissense, by gene and review status (code)
+- [x] Small Streamlit demo (code)
+- [ ] Full training run and final results
 
 More detail in [`reports/PLAN.md`](reports/PLAN.md).
 
@@ -88,7 +101,7 @@ More detail in [`reports/PLAN.md`](reports/PLAN.md).
 
 ## Data
 
-All public: [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/), [Ensembl GRCh38](https://www.ensembl.org/), [dbNSFP](https://www.dbnsfp.org/) for CADD and REVEL scores, and [gnomAD](https://gnomad.broadinstitute.org/) for allele frequencies.
+All public: [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/), [Ensembl GRCh38](https://www.ensembl.org/), [dbNSFP](https://www.dbnsfp.org/) via [MyVariant.info](https://myvariant.info/) for CADD, REVEL and AlphaMissense scores, and [gnomAD](https://gnomad.broadinstitute.org/) for allele frequencies.
 
 ## License
 
