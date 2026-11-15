@@ -2,7 +2,7 @@
 
 Predicting whether a missense variant is pathogenic or benign from the DNA sequence around it.
 
-**Status: code complete, full training run pending.** The dataset is built. All models, the benchmark and the demo are implemented and tested. The results table fills in from the real run.
+**Status: complete.** All models are trained and benchmarked on held-out chromosomes; see the results below and the full write-up in `reports/REPORT.md`.
 
 ## The idea
 
@@ -88,9 +88,9 @@ Settings for the dataset (flank size, review stars, splits) are in `configs/data
 - [x] ClinVar + GRCh38 dataset with a chromosome split
 - [x] Baselines: logistic regression and 1D CNN
 - [x] LoRA fine-tuning of Nucleotide Transformer (code, with a Colab notebook)
-- [x] Compare with CADD, REVEL and AlphaMissense, by gene and review status (code)
-- [x] Small Streamlit demo (code)
-- [ ] Full training run and final results
+- [x] Compare with CADD, REVEL and AlphaMissense, by gene and review status
+- [x] Small Streamlit demo
+- [x] Full training run and final results
 
 More detail in [`reports/PLAN.md`](reports/PLAN.md).
 
