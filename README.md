@@ -50,9 +50,11 @@ On 8,168 test variants scored by every tool:
 | AlphaMissense | 0.954 (0.941-0.967) | 0.851 (0.789-0.903) | 0.959 |
 | CADD | 0.926 (0.909-0.945) | 0.723 (0.634-0.809) | 0.912 |
 | 1D CNN | 0.775 (0.745-0.804) | 0.497 (0.388-0.591) | 0.753 |
+| NT + LoRA | 0.754 (0.713-0.789) | 0.391 (0.304-0.472) | 0.662 |
 | Logistic regression | 0.701 (0.678-0.727) | 0.352 (0.277-0.440) | 0.676 |
 
 - The best sequence-only model is 1D CNN, AUROC 0.775.
+- The transformer changes AUROC by -0.021 compared with the CNN.
 - Against REVEL the difference is -0.198 (95% CI -0.229 to -0.168, resampling genes).
 
 Full write-up: [`reports/REPORT.md`](reports/REPORT.md).

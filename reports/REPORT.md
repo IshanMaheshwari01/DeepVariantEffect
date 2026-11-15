@@ -39,20 +39,22 @@ external tool, so all rows use identical variants.
 | AlphaMissense | 0.954 (0.941-0.967) | 0.851 (0.789-0.903) | 0.959 |
 | CADD | 0.926 (0.909-0.945) | 0.723 (0.634-0.809) | 0.912 |
 | 1D CNN | 0.775 (0.745-0.804) | 0.497 (0.388-0.591) | 0.753 |
+| NT + LoRA | 0.754 (0.713-0.789) | 0.391 (0.304-0.472) | 0.662 |
 | Logistic regression | 0.701 (0.678-0.727) | 0.352 (0.277-0.440) | 0.676 |
 
 - The best sequence-only model is 1D CNN, AUROC 0.775.
+- The transformer changes AUROC by -0.021 compared with the CNN.
 - Against REVEL the difference is -0.198 (95% CI -0.229 to -0.168, resampling genes).
 
 ![ROC and PR curves](figures/04_roc_pr.png)
 
 ### By review status
 
-| Review status | n | Pathogenic | Logistic regression | 1D CNN | CADD | REVEL | AlphaMissense |
-|---|---:|---:|:---:|:---:|:---:|:---:|:---:|
-| 1 star | 5,513 | 937 | 0.741 | 0.796 | 0.926 | 0.968 | 0.954 |
-| 2 stars | 2,577 | 615 | 0.634 | 0.733 | 0.922 | 0.979 | 0.952 |
-| 3+ stars | 78 | 44 | 0.738 | 0.807 | 0.916 | 0.999 | 1.000 |
+| Review status | n | Pathogenic | Logistic regression | 1D CNN | NT + LoRA | CADD | REVEL | AlphaMissense |
+|---|---:|---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 star | 5,513 | 937 | 0.741 | 0.796 | 0.768 | 0.926 | 0.968 | 0.954 |
+| 2 stars | 2,577 | 615 | 0.634 | 0.733 | 0.727 | 0.922 | 0.979 | 0.952 |
+| 3+ stars | 78 | 44 | 0.738 | 0.807 | 0.718 | 0.916 | 0.999 | 1.000 |
 
 ![AUROC by review status](figures/06_by_review_status.png)
 
@@ -60,6 +62,7 @@ external tool, so all rows use identical variants.
 
 - Logistic regression: ECE 0.053
 - 1D CNN: ECE 0.043
+- NT + LoRA: ECE 0.032
 
 ![Calibration](figures/05_calibration.png)
 
@@ -78,3 +81,4 @@ external tool, so all rows use identical variants.
 
 - Logistic regression: `{"name": "logreg_kmer", "data": "data/processed/variants.parquet", "flank_in": 512, "context_flank": 50, "context_k": 4, "delta_k": 6, "C": 0.1, "max_iter": 2000, "seed": 42}`
 - 1D CNN: `{"name": "cnn_onehot", "data": "data/processed/variants.parquet", "flank_in": 512, "flank": 100, "channels": 128, "dropout": 0.3, "epochs": 10, "batch_size": 256, "lr": 0.001, "weight_decay": 0.0001, "patience": 3, "rc_augment": true, "seed": 42}`
+- NT + LoRA: `{"n_train": 60000, "epochs": 3, "batch_size": 16, "grad_accum": 2, "lr_lora": 0.0001, "lr_head": 0.001, "lora_r": 8, "seed": 0}`
