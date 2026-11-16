@@ -6,7 +6,7 @@ Predicting whether a missense variant is pathogenic or benign from the DNA seque
 
 ## The idea
 
-After variant calling (see my [gatk4-germline-pipeline](https://github.com/IshanMaheshwari01/gatk4-germline-pipeline)) you end up with a VCF full of variants, and most of them have never been classified. In ClinVar they would be "variants of uncertain significance". Tools like CADD and REVEL give a score for these, but they combine a lot of hand-made features.
+After variant calling (see my [gatk4-germline-pipeline](https://github.com/IshanMaheshwari01/gatk4-germline-pipeline)) I ended up with a VCF full of variants, and most of them have never been classified. In ClinVar they would be "variants of uncertain significance". Tools like CADD and REVEL give a score for these, but they combine a lot of hand-made features.
 
 I want to see how far you can get using only the DNA sequence. The plan is to fine-tune a DNA language model (Nucleotide Transformer from InstaDeep) on ClinVar variants and compare it against CADD and REVEL on the same held-out variants.
 
