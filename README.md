@@ -2,7 +2,7 @@
 
 Predicting whether a missense variant is pathogenic or benign from the DNA sequence around it.
 
-**Status: complete.** All models are trained and benchmarked on held-out chromosomes; see the results below and the full write-up in `reports/REPORT.md`.
+**Status: complete.** All models are trained and benchmarked on held-out chromosomes; see the results below, the [interactive dashboard](https://ishanmaheshwari01.github.io/DeepVariantEffect/docs/), or the full write-up in `reports/REPORT.md`.
 
 ## The idea
 

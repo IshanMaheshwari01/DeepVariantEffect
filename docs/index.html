@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepVariantEffect</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #1a1a1a; background: #fafafa; margin: 0; line-height: 1.45; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 28px 20px 60px; }
+  header h1 { font-size: 26px; margin: 0 0 6px; }
+  header p.sub { color: #555; margin: 0 0 2px; font-size: 15px; }
+  header p.links { font-size: 13.5px; margin-top: 8px; }
+  a { color: #0a5a8c; }
+  .card { background: #fff; border: 1px solid #e4e4e4; border-radius: 8px;
+          padding: 18px 20px; margin: 18px 0; }
+  .card h2 { font-size: 17px; margin: 0 0 4px; }
+  .card p.note { color: #666; font-size: 13.5px; margin: 4px 0 12px; }
+  .chart { width: 100%; }
+  table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: left; }
+  th { background: #f4f6f8; font-weight: 600; white-space: nowrap; }
+  tr:hover td { background: #f7fbff; }
+  td.num, th.num { text-align: right; }
+  img.fig { width: 100%; border: 1px solid #e4e4e4; border-radius: 6px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid2 > .card { margin: 0; }
+  @media (max-width: 820px) { .grid2 { grid-template-columns: 1fr; } }
+  .steps { display: flex; flex-wrap: wrap; gap: 8px; }
+  .step { background: #eef4f9; border: 1px solid #d3e2ee; border-radius: 6px;
+          padding: 8px 12px; font-size: 13.5px; }
+  .step b { display: block; font-size: 14px; }
+  .step span { color: #555; }
+  .filterbar { margin-bottom: 10px; }
+  .filterbar button { font-size: 13px; padding: 4px 10px; margin-right: 6px;
+    border: 1px solid #ccc; background: #fff; border-radius: 5px; cursor: pointer; }
+  .filterbar button.active { background: #0a5a8c; color: #fff; border-color: #0a5a8c; }
+  footer { color: #888; font-size: 12.5px; margin-top: 34px; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>DeepVariantEffect</h1>
+  <p class="sub">Predicting whether a missense variant is pathogenic from the DNA sequence around it.</p>
+  <p class="links"><a href="https://github.com/IshanMaheshwari01/DeepVariantEffect">code on GitHub</a>
+   &middot; <a href="https://github.com/IshanMaheshwari01/DeepVariantEffect#readme">README</a></p>
+</header>
+
+<div class="card">
+  <h2>Model comparison on 8,168 held-out test variants</h2>
+  <p class="note">Chromosome-split test set (chr8, chr21). Clinical scores (REVEL,
+  AlphaMissense, CADD) are shown alongside the sequence-only models trained here. Bars are
+  95% CIs.</p>
+  <div class="grid2">
+    <div id="auroc" class="chart"></div>
+    <div id="auprc" class="chart"></div>
+  </div>
+  <table><thead><tr><th>model</th><th class="num">AUROC (95% CI)</th>
+  <th class="num">AUPRC (95% CI)</th><th class="num">within-gene AUROC</th></tr></thead>
+  <tbody><tr><td><b>REVEL</b></td><td class='num'>0.973 (0.965-0.979)</td><td class='num'>0.921 (0.885-0.948)</td><td class='num'>0.953</td></tr><tr><td><b>AlphaMissense</b></td><td class='num'>0.954 (0.941-0.967)</td><td class='num'>0.851 (0.789-0.903)</td><td class='num'>0.959</td></tr><tr><td><b>CADD</b></td><td class='num'>0.926 (0.909-0.945)</td><td class='num'>0.723 (0.634-0.809)</td><td class='num'>0.912</td></tr><tr><td><b>1D CNN</b></td><td class='num'>0.775 (0.745-0.804)</td><td class='num'>0.497 (0.388-0.591)</td><td class='num'>0.753</td></tr><tr><td><b>NT + LoRA</b></td><td class='num'>0.754 (0.713-0.789)</td><td class='num'>0.391 (0.304-0.472)</td><td class='num'>0.662</td></tr><tr><td><b>logistic regression</b></td><td class='num'>0.701 (0.678-0.727)</td><td class='num'>0.352 (0.277-0.440)</td><td class='num'>0.676</td></tr></tbody></table>
+</div>
+
+<div class="card">
+  <h2>ROC, precision-recall and calibration</h2>
+  <div class="grid2">
+    <img class="fig" src="../reports/figures/04_roc_pr.png" alt="ROC and PR curves">
+    <img class="fig" src="../reports/figures/05_calibration.png" alt="calibration curves">
+  </div>
+</div>
+
+<div class="card">
+  <h2>Dataset</h2>
+  <p class="note">ClinVar missense SNVs with a clear label and at least one review star,
+  split by chromosome to avoid leakage. 207,018 variants across 15,018 genes.</p>
+  <table><thead><tr><th>split</th><th>chromosomes</th><th class="num">benign</th>
+  <th class="num">pathogenic</th></tr></thead><tbody>
+  <tr><td>Train</td><td>everything else</td><td class="num">134,144</td><td class="num">57,619</td></tr>
+  <tr><td>Validation</td><td>chr10</td><td class="num">4,894</td><td class="num">1,684</td></tr>
+  <tr><td>Test</td><td>chr8, chr21</td><td class="num">6,976</td><td class="num">1,701</td></tr>
+  </tbody></table>
+</div>
+
+<footer>Every number on this page comes from the result files committed in the
+<a href="https://github.com/IshanMaheshwari01/DeepVariantEffect">repository</a>. Built as a static page, no server.</footer>
+</div>
+<script>
+const FONT = {family: '-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', size: 12.5};
+const CFG = {responsive: true, displaylogo: false};
+const AX = (t) => ({title: {text: t, font: FONT}, font: FONT});
+function bar(el, x, y, opts={}) {
+  Plotly.newPlot(el, [{type: 'bar', x: x, y: y,
+    orientation: opts.horizontal ? 'h' : 'v',
+    marker: {color: opts.color || '#4C72B0'},
+    error_y: opts.errors ? {type: 'data', array: opts.errors, visible: true, color: '#999'} : undefined,
+    text: opts.text, textposition: opts.horizontal ? 'auto' : undefined}], {
+    margin: {l: opts.ml || 60, r: 20, t: 10, b: opts.mb || 60},
+    xaxis: Object.assign(AX(opts.xtitle || ''), opts.tickangle ? {tickangle: opts.tickangle} : {}),
+    yaxis: Object.assign(AX(opts.ytitle || ''), {automargin: true}),
+    font: FONT, plot_bgcolor: 'white', paper_bgcolor: 'white',
+    showlegend: false, height: opts.height || 380,
+  }, CFG);
+}
+function groupedBar(el, traces, opts={}) {
+  Plotly.newPlot(el, traces.map(t => ({type: 'bar', name: t.name, x: t.x, y: t.y,
+      marker: {color: t.color},
+      error_y: t.errors ? {type: 'data', array: t.errors, visible: true, color: '#aaa'} : undefined})), {
+    barmode: 'group',
+    margin: {l: opts.ml || 55, r: 20, t: 10, b: opts.mb || 70},
+    xaxis: Object.assign(AX(opts.xtitle || ''), opts.tickangle ? {tickangle: opts.tickangle} : {}),
+    yaxis: AX(opts.ytitle || ''),
+    font: FONT, plot_bgcolor: 'white', paper_bgcolor: 'white',
+    legend: {font: FONT, orientation: opts.legendH ? 'h' : 'v', y: opts.legendH ? 1.12 : 1},
+    height: opts.height || 400,
+  }, CFG);
+}
+
+const entries = [{"name": "REVEL", "auroc": 0.973, "auprc": 0.921, "auroc_ci": [0.965, 0.979], "auprc_ci": [0.885, 0.948], "within": 0.953}, {"name": "AlphaMissense", "auroc": 0.954, "auprc": 0.851, "auroc_ci": [0.941, 0.967], "auprc_ci": [0.789, 0.903], "within": 0.959}, {"name": "CADD", "auroc": 0.926, "auprc": 0.723, "auroc_ci": [0.909, 0.945], "auprc_ci": [0.634, 0.809], "within": 0.912}, {"name": "1D CNN", "auroc": 0.775, "auprc": 0.497, "auroc_ci": [0.745, 0.804], "auprc_ci": [0.388, 0.591], "within": 0.753}, {"name": "NT + LoRA", "auroc": 0.754, "auprc": 0.391, "auroc_ci": [0.713, 0.789], "auprc_ci": [0.304, 0.472], "within": 0.662}, {"name": "logistic regression", "auroc": 0.701, "auprc": 0.352, "auroc_ci": [0.678, 0.727], "auprc_ci": [0.277, 0.44], "within": 0.676}];
+const errs = k => entries.map(e => (e[k + '_ci'][1] - e[k + '_ci'][0]) / 2);
+groupedBar('auroc', [{
+  name: 'AUROC', x: entries.map(e => e.name), y: entries.map(e => e.auroc),
+  errors: errs('auroc'), color: '#4C72B0'
+}], {ytitle: 'AUROC', height: 360, mb: 90, tickangle: -35});
+Plotly.relayout('auroc', {yaxis: {range: [0.3, 1.0],
+  title: {text: 'AUROC', font: FONT}, font: FONT}});
+groupedBar('auprc', [{
+  name: 'AUPRC', x: entries.map(e => e.name), y: entries.map(e => e.auprc),
+  errors: errs('auprc'), color: '#d6604d'
+}], {ytitle: 'AUPRC', height: 360, mb: 90, tickangle: -35});
+Plotly.relayout('auprc', {yaxis: {range: [0.2, 1.0],
+  title: {text: 'AUPRC', font: FONT}, font: FONT}});
+</script>
+</body>
+</html>
